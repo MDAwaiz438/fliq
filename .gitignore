@@ -42,3 +42,11 @@ next-env.d.ts
 
 /src/generated/prisma
 *.db
+
+# AI Assistants
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+AGENTS.md
+CLAUDE.md
