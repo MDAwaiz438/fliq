@@ -91,7 +91,7 @@ export default function RegisterPage() {
         <form onSubmit={handleRegister} className="space-y-4">
           {/* Username / Full Name */}
           <div>
-            <label className="block text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5 flex items-center gap-1.5">
+            <label className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5">
               <User size={13} className="text-zinc-500" />
               <span>Username / Full Name <strong className="text-red-500">*</strong></span>
             </label>
@@ -107,7 +107,7 @@ export default function RegisterPage() {
 
           {/* Email Address */}
           <div>
-            <label className="block text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5 flex items-center gap-1.5">
+            <label className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5">
               <Mail size={13} className="text-zinc-500" />
               <span>Email Address <strong className="text-red-500">*</strong></span>
             </label>
@@ -123,7 +123,7 @@ export default function RegisterPage() {
 
           {/* Mobile Phone Number */}
           <div>
-            <label className="block text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5 flex items-center gap-1.5">
+            <label className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5">
               <Phone size={13} className="text-zinc-500" />
               <span>Mobile Phone Number <strong className="text-red-500">*</strong></span>
             </label>
@@ -139,7 +139,7 @@ export default function RegisterPage() {
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5 flex items-center gap-1.5">
+            <label className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5">
               <Lock size={13} className="text-zinc-500" />
               <span>Password <strong className="text-red-500">*</strong></span>
             </label>
@@ -164,7 +164,7 @@ export default function RegisterPage() {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5 flex items-center gap-1.5">
+            <label className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-700 mb-1.5">
               <Lock size={13} className="text-zinc-500" />
               <span>Confirm Password <strong className="text-red-500">*</strong></span>
             </label>
