@@ -1,0 +1,264 @@
+// FLIQ E-Commerce Database Schema for MongoDB Atlas
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCED
+  FAILED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FULFILLED
+  CANCELLED
+  SHIPPED
+  DELIVERED
+  RETURNED
+}
+
+enum FinancialStatus {
+  PENDING
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+}
+
+enum FulfillmentStatus {
+  UNFULFILLED
+  PARTIALLY_FULFILLED
+  FULFILLED
+  SHIPPED
+  DELIVERED
+  RTO_INITIATED
+  RTO_DELIVERED
+  RETURNED
+}
+
+enum PaymentMethod {
+  CARD
+  UPI
+  NET_BANKING
+  WALLET
+  COD
+}
+
+enum ShipmentStatus {
+  PROCESSING
+  PICKUP_SCHEDULED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  RTO_INITIATED
+  RTO_DELIVERED
+  CANCELLED
+}
+
+enum ReturnStatus {
+  REQUESTED
+  APPROVED
+  PICKUP_SCHEDULED
+  IN_TRANSIT
+  RECEIVED
+  REFUNDED
+  REJECTED
+}
+
+enum RefundStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+model Customer {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  email             String    @unique
+  phone             String?   @unique
+  firstName         String?
+  lastName          String?
+  ordersCount       Int       @default(0)
+  totalSpent        Float     @default(0.0)
+  orders            Order[]
+  addresses         Address[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Address {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  customerId   String?   @db.ObjectId
+  fullName     String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  pincode      String
+  country      String    @default("IN")
+  phone        String?
+  customer     Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+}
+
+model Product {
+  id               String      @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  slug             String      @unique
+  description      String?
+  price            Float
+  compareAtPrice   Float?
+  category         String?
+  images           String[]    @default([])
+  colors           Json?       // Array of { name: string, hex: string }
+  details          String[]    @default([])
+  careInstructions String?
+  fabricGsm        String?
+  fitProfile       String?
+  hsnCode          String?
+  syncStatus       SyncStatus  @default(PENDING)
+  lastSyncedAt     DateTime?
+  syncError        String?
+  variants         Variant[]
+  orderItems       OrderItem[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Variant {
+  id                     String      @id @default(auto()) @map("_id") @db.ObjectId
+  productId              String      @db.ObjectId
+  sku                    String      @unique
+  title                  String
+  color                  String
+  size                   String
+  price                  Float
+  inventoryQuantity      Int         @default(0)
+  syncStatus             SyncStatus  @default(PENDING)
+  lastSyncedAt           DateTime?
+  syncError              String?
+  product                Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems             OrderItem[]
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+}
+
+model Order {
+  id                 String            @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber        String            @unique
+  customerId         String?           @db.ObjectId
+  customerEmail      String
+  customerPhone      String?
+  customerName       String?
+  status             OrderStatus       @default(PENDING)
+  financialStatus    FinancialStatus   @default(PENDING)
+  fulfillmentStatus  FulfillmentStatus @default(UNFULFILLED)
+  paymentMethod      PaymentMethod     @default(CARD)
+  subtotal           Float
+  shippingCost       Float             @default(0.0)
+  discount           Float             @default(0.0)
+  total              Float
+  shippingCity       String
+  shippingState      String
+  shippingPincode    String
+  shippingCountry    String            @default("IN")
+  shippingAddress    Json
+  syncStatus         SyncStatus        @default(PENDING)
+  lastSyncedAt       DateTime?
+  syncError          String?
+  customer           Customer?         @relation(fields: [customerId], references: [id])
+  items              OrderItem[]
+  shipments          Shipment[]
+  returns            Return[]
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId   String   @db.ObjectId
+  productId String   @db.ObjectId
+  variantId String   @db.ObjectId
+  title     String
+  sku       String
+  quantity  Int
+  price     Float
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  variant   Variant  @relation(fields: [variantId], references: [id])
+}
+
+model Shipment {
+  id                   String         @id @default(auto()) @map("_id") @db.ObjectId
+  orderId              String         @db.ObjectId
+  shiprocketShipmentId String?        @unique
+  shiprocketOrderId    String?
+  awbCode              String?        @unique
+  courierCompanyId     String?
+  courierName          String?
+  status               ShipmentStatus @default(PROCESSING)
+  statusCode           Int?
+  labelUrl             String?
+  manifestUrl          String?
+  trackingUrl          String?
+  pickupLocation       String?        @default("Primary Warehouse")
+  isCod                Boolean        @default(false)
+  codAmount            Float?         @default(0.0)
+  order                Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  events               ShipmentEvent[]
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+}
+
+model ShipmentEvent {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  shipmentId String   @db.ObjectId
+  status     String
+  statusCode Int?
+  location   String?
+  activity   String
+  timestamp  DateTime
+  shipment   Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+}
+
+model Return {
+  id                         String        @id @default(auto()) @map("_id") @db.ObjectId
+  orderId                    String        @db.ObjectId
+  shiprocketReturnOrderId    String?
+  shiprocketReturnShipmentId  String?
+  returnAwbCode              String?
+  reason                     String
+  status                     ReturnStatus  @default(REQUESTED)
+  refundAmount               Float?
+  refundStatus               RefundStatus? @default(PENDING)
+  order                      Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt                  DateTime      @default(now())
+  updatedAt                  DateTime      @updatedAt
+}
+
+model WebhookLog {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  externalEventId String?  @unique
+  source          String   // SHOPIFY or SHIPROCKET
+  topic           String
+  payload         Json
+  status          String   // PROCESSED, SUPPRESSED, FAILED, DUPLICATE
+  error           String?
+  createdAt       DateTime @default(now())
+}
+
+model AdminAlert {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String   // DEAD_LETTER_JOB, OVERSOLD_ORDER, SHIPMENT_FAILED
+  title     String
+  message   String
+  metadata  Json?
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

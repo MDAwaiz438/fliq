@@ -1,33 +1,41 @@
+"use client";
+
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-(--accent) text-(--bg)">
-      <div className="px-6 md:px-12 py-8 border-b-2 border-(--bg)">
-        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">
-          Terms of Service
-        </h1>
+    <div className="max-w-4xl mx-auto px-(--content-pad-x) pt-8 pb-20 font-body">
+      <div className="border-b border-bone pb-6 mb-8">
+        <span className="text-xs font-mono font-bold text-acid uppercase tracking-widest block mb-1">LEGAL GOVERNANCE</span>
+        <h1 className="font-display text-4xl sm:text-5xl text-bone uppercase tracking-tight">TERMS OF SERVICE</h1>
+        <span className="font-mono text-xs text-muted block mt-2">LAST UPDATED: AUGUST 14, 2026</span>
       </div>
 
-      <div className="max-w-4xl mx-auto p-8 md:p-16 space-y-8 font-medium text-(--bg)">
-        <p className="text-sm uppercase font-bold tracking-widest text-(--bg)">Last Updated: August 2026</p>
-        
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">1. Acceptance of Terms</h2>
-          <p>By accessing or using the Fliq website, you agree to be bound by these Terms of Service. If you do not agree, do not use the site.</p>
+      <div className="prose prose-zinc max-w-none text-xs text-zinc-700 space-y-6 leading-relaxed">
+        <section>
+          <h2 className="font-heading text-lg font-bold uppercase text-bone mb-2">1. OVERVIEW & ACCEPTANCE</h2>
+          <p>
+            Welcome to FLIQ Streetwear & Atelier ("FLIQ", "we", "us"). By accessing or purchasing from fliqstreetwear.com, you agree to bound by these Terms of Service. Please read them carefully before making a purchase.
+          </p>
         </section>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">2. Intellectual Property</h2>
-          <p>All content, including but not limited to text, graphics, logos, images, and software, is the property of Fliq and is protected by copyright laws.</p>
+        <section>
+          <h2 className="font-heading text-lg font-bold uppercase text-bone mb-2">2. LIMITED DROPS & QUANTITY LIMITS</h2>
+          <p>
+            All FLIQ products are released in capped limited batches. We reserve the right to limit purchase quantities per customer/address (typically max 2 units per style) to prevent automated reselling bot activity.
+          </p>
         </section>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">3. Products and Pricing</h2>
-          <p>We reserve the right to modify prices, discontinue products, or change descriptions at any time without notice. All prices are listed in USD.</p>
+        <section>
+          <h2 className="font-heading text-lg font-bold uppercase text-bone mb-2">3. PRICING & PAYMENTS</h2>
+          <p>
+            Prices are listed in INR (Indian Rupees) inclusive of applicable GST for domestic customers. Payments must be settled in full prior to order dispatch via our integrated Razorpay or Stripe gateways.
+          </p>
         </section>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">4. Return Policy</h2>
-          <p>Returns are accepted within 14 days of delivery. Items must be unworn, unwashed, and in their original condition with all tags attached.</p>
+        <section>
+          <h2 className="font-heading text-lg font-bold uppercase text-bone mb-2">4. INTELLECTUAL PROPERTY</h2>
+          <p>
+            All designs, graphic artwork, typography, and logos displayed on this site are the exclusive intellectual property of FLIQ Atelier. Unauthorized reproduction is strictly prohibited.
+          </p>
         </section>
       </div>
     </div>

@@ -1,33 +1,34 @@
+"use client";
+
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-(--accent) text-(--bg)">
-      <div className="px-6 md:px-12 py-8 border-b-2 border-(--bg)">
-        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">
-          Privacy Policy
-        </h1>
+    <div className="max-w-4xl mx-auto px-(--content-pad-x) pt-8 pb-20 font-body">
+      <div className="border-b border-bone pb-6 mb-8">
+        <span className="text-xs font-mono font-bold text-acid uppercase tracking-widest block mb-1">DATA PROTECTION</span>
+        <h1 className="font-display text-4xl sm:text-5xl text-bone uppercase tracking-tight">PRIVACY POLICY</h1>
+        <span className="font-mono text-xs text-muted block mt-2">LAST UPDATED: AUGUST 14, 2026</span>
       </div>
 
-      <div className="max-w-4xl mx-auto p-8 md:p-16 space-y-8 font-medium text-(--bg)">
-        <p className="text-sm uppercase font-bold tracking-widest text-(--bg)">Last Updated: August 2026</p>
-        
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">1. Information We Collect</h2>
-          <p>We collect information you provide directly to us, such as when you create an account, make a purchase, or subscribe to our newsletter. This may include your name, email, shipping address, and payment details.</p>
+      <div className="prose prose-zinc max-w-none text-xs text-zinc-700 space-y-6 leading-relaxed">
+        <section>
+          <h2 className="font-heading text-lg font-bold uppercase text-bone mb-2">1. INFORMATION WE COLLECT</h2>
+          <p>
+            We collect personal data required to fulfill your drop orders, including your name, shipping address, email address, phone number for OTP verification, and order transaction history.
+          </p>
         </section>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">2. How We Use Your Information</h2>
-          <p>We use the information to process your orders, communicate with you, improve our services, and send promotional materials if you have opted in.</p>
+        <section>
+          <h2 className="font-heading text-lg font-bold uppercase text-bone mb-2">2. HOW WE USE YOUR DATA</h2>
+          <p>
+            Your information is used strictly to process orders, coordinate courier delivery via Shiprocket, provide customer support, and send drop countdown notifications (if opted-in).
+          </p>
         </section>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">3. Information Sharing</h2>
-          <p>We do not sell your personal information. We may share information with trusted third-party service providers (like Stripe for payments or shipping carriers) solely for the purpose of fulfilling your order.</p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black uppercase tracking-tighter">4. Cookies</h2>
-          <p>We use cookies to enhance your browsing experience, remember your cart items, and analyze site traffic.</p>
+        <section>
+          <h2 className="font-heading text-lg font-bold uppercase text-bone mb-2">3. THIRD-PARTY SHARING</h2>
+          <p>
+            We never sell your data to third parties. Data is shared exclusively with verified logistics partners (Shiprocket, BlueDart) and payment processors (Razorpay, Stripe) to execute your transaction.
+          </p>
         </section>
       </div>
     </div>

@@ -1,169 +1,127 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, ShoppingBag, User, Menu, X, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useCart } from "@/context/CartContext";
-import { searchProducts } from "@/app/actions/products";
+import Image from "next/image";
+import { Search, Heart, ShoppingCart, Menu, User } from "lucide-react";
+import { useCartStore } from "@/store/useCartStore";
+import { useEffect, useState } from "react";
+import AuthPromptModal from "@/components/auth/AuthPromptModal";
+
 export default function Navbar() {
-  const { cartCount } = useCart();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  const { items, openCart } = useCartStore();
+  const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
-    if (searchQuery) {
-      searchProducts(searchQuery).then(results => {
-        setSearchResults(results);
-      });
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchQuery]);
-
-  // Close menus on route change
-  useEffect(() => {
-    setIsMenuOpen(false);
-    setIsSearchOpen(false);
-    setSearchQuery("");
-  }, [pathname]);
-
-  // Prevent scroll when mobile menu is open
-  useEffect(() => {
-    if (isMenuOpen || isSearchOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => { document.body.style.overflow = "unset"; };
-  }, [isMenuOpen, isSearchOpen]);
-
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   return (
     <>
-      <nav className="w-full px-4 md:px-6 py-4 flex items-center justify-between border-b border-(--border) bg-(--bg) sticky top-0 z-40 backdrop-blur-sm bg-opacity-95">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex flex-col">
-            <span className="font-(family-name:--font-display) font-bold text-3xl md:text-4xl tracking-tighter leading-none text-(--accent) transition-all duration-200" style={{ transitionTimingFunction: 'var(--ease-out)' }}>FLIQ</span>
-            <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] leading-none text-(--text-muted)">Street Culture</span>
-          </div>
+      <AuthPromptModal />
+      <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200 h-20 transition-all shadow-xs">
+      <div className="w-full max-w-(--content-max) mx-auto px-(--content-pad-x) h-full flex items-center justify-between">
+        
+        {/* Mobile Menu Toggle */}
+        <button className="lg:hidden text-bone hover:text-acid transition-colors cursor-pointer">
+          <Menu size={26} />
+        </button>
+
+        {/* Official FLIQ Logo */}
+        <Link href="/" className="flex items-center gap-2 py-1">
+          <Image
+            src="/logo.svg"
+            alt="FLIQ Logo"
+            width={200}
+            height={60}
+            className="h-12 sm:h-14 w-auto object-contain"
+            priority
+          />
         </Link>
 
-        <div className="hidden lg:flex items-center gap-8 font-(family-name:--font-display) font-semibold text-sm uppercase tracking-widest">
-          <Link href="/products" className="text-(--text-primary) hover:text-(--accent) transition-colors duration-200">Shop</Link>
-          <Link href="/products" className="text-(--text-primary) hover:text-(--accent) transition-colors duration-200">Collections</Link>
-          <Link href="/about" className="text-(--text-primary) hover:text-(--accent) transition-colors duration-200">About</Link>
+        {/* Desktop Links — Larger Font Size & Spacing */}
+        <div className="hidden lg:flex items-center gap-8 h-full">
+          <Link href="/drops" className="font-heading font-bold text-sm uppercase text-bone hover:text-acid tracking-widest transition-colors h-full flex items-center relative group">
+            DROPS
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-acid transition-all group-hover:w-full"></span>
+          </Link>
+          
+          <div className="group h-full flex items-center">
+            <Link href="/shop" className="font-heading font-bold text-sm uppercase text-bone group-hover:text-acid tracking-widest transition-colors relative">
+              SHOP
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-acid transition-all group-hover:w-full"></span>
+            </Link>
+
+            {/* Mega Menu */}
+            <div className="absolute top-full left-0 w-full bg-white border-b border-zinc-200 shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top scale-y-95 group-hover:scale-y-100">
+              <div className="max-w-(--content-max) mx-auto px-(--content-pad-x) py-6 grid grid-cols-2 gap-8">
+                <div>
+                  <h4 className="font-heading font-bold text-xs uppercase mb-3 tracking-wider text-acid border-b border-zinc-200 pb-2">CATEGORIES</h4>
+                  <ul className="grid grid-cols-2 gap-y-2.5 font-body text-xs">
+                    <li><Link href="/shop/hoodies" className="text-bone hover:text-acid transition-colors">Hoodies</Link></li>
+                    <li><Link href="/shop/t-shirts" className="text-bone hover:text-acid transition-colors">T-Shirts</Link></li>
+                    <li><Link href="/shop/shirts" className="text-bone hover:text-acid transition-colors">Shirts</Link></li>
+                    <li><Link href="/shop/cargo-pants" className="text-bone hover:text-acid transition-colors">Cargo Pants</Link></li>
+                    <li><Link href="/shop/polos" className="text-bone hover:text-acid transition-colors">Polos</Link></li>
+                    <li><Link href="/shop/outerwear" className="text-bone hover:text-acid transition-colors">Outerwear</Link></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-xs uppercase mb-3 tracking-wider text-acid border-b border-zinc-200 pb-2">FEATURED DROP</h4>
+                  <div className="bg-obsidian p-4 rounded-sm border border-zinc-200 hover:border-acid transition-colors">
+                    <h5 className="font-heading text-lg font-bold uppercase text-bone mb-1">DROP 03: DISTORTION</h5>
+                    <p className="text-xs text-zinc-500 mb-4">Limited batch release. Ships globally.</p>
+                    <Link href="/drops/drop-03-distortion" className="text-acid font-heading font-bold text-xs uppercase tracking-wider hover:underline">
+                      SHOP DROP &rarr;
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Link href="/collab" className="font-heading font-bold text-sm uppercase text-bone hover:text-acid tracking-widest transition-colors h-full flex items-center relative group">
+            COLLAB
+          </Link>
+          <Link href="/drops" className="font-heading font-bold text-sm uppercase text-bone hover:text-acid tracking-widest transition-colors h-full flex items-center relative group">
+            ARCHIVE
+          </Link>
+          <Link href="/about" className="font-heading font-bold text-sm uppercase text-bone hover:text-acid tracking-widest transition-colors h-full flex items-center relative group">
+            ABOUT
+          </Link>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-6">
-          {/* Desktop Search Bar */}
-          <div 
-            className="hidden md:flex items-center border-b border-(--border) pb-1 cursor-pointer hover:border-(--accent) transition-colors duration-200 group/search" 
-            onClick={() => setIsSearchOpen(true)}
-          >
-            <Search size={16} className="mr-2 text-(--text-muted) group-hover/search:text-(--accent) transition-colors" />
-            <span className="text-xs font-bold uppercase tracking-widest text-(--text-muted) min-w-30">Search...</span>
-          </div>
+        {/* Action Icons */}
+        <div className="flex items-center gap-5 text-bone">
+          <Link href="/search" className="hover:text-acid transition-colors cursor-pointer p-1" title="Search">
+            <Search size={22} />
+          </Link>
           
-          {/* Mobile Search Icon */}
-          <button className="md:hidden text-(--text-primary) hover:text-(--accent) transition-colors" onClick={() => setIsSearchOpen(true)}>
-            <Search size={20} />
-          </button>
+          <Link href="/account/wishlist" className="hidden sm:block hover:text-acid transition-colors p-1" title="Wishlist">
+            <Heart size={22} />
+          </Link>
 
-          <Link href="/account" className="text-(--text-primary) hover:text-(--accent) transition-colors"><User size={20} className="md:w-5.5 md:h-5.5" /></Link>
-          <Link href="/cart" className="hover:text-(--accent) transition-colors relative block text-(--text-primary)">
-            <ShoppingBag size={20} className="md:w-5.5 md:h-5.5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-2 h-4 w-4 bg-(--accent) text-(--bg) rounded-full text-[10px] flex items-center justify-center font-bold">
+          <Link href="/login" className="hidden sm:block hover:text-acid transition-colors p-1" title="Account Login">
+            <User size={22} />
+          </Link>
+
+          <button
+            onClick={openCart}
+            className="relative bg-bone text-white p-2.5 rounded-full hover:bg-acid transition-colors cursor-pointer flex items-center justify-center shadow-xs"
+            title="Open Cart"
+          >
+            <ShoppingCart size={20} />
+            {mounted && cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-acid text-white font-mono text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-xs">
                 {cartCount}
               </span>
             )}
-          </Link>
-          <button className="lg:hidden text-(--text-primary) hover:text-(--accent) transition-colors" onClick={() => setIsMenuOpen(true)}>
-            <Menu size={20} className="md:w-5.5 md:h-5.5" />
           </button>
         </div>
-      </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 bg-(--bg) z-50 flex flex-col">
-          <div className="px-4 py-4 flex items-center justify-between border-b border-(--border)">
-            <div className="flex flex-col">
-              <span className="font-(family-name:--font-display) font-bold text-3xl tracking-tighter leading-none text-(--accent)">FLIQ</span>
-              <span className="text-[8px] font-bold uppercase tracking-[0.2em] leading-none text-(--text-muted)">Street Culture</span>
-            </div>
-            <button onClick={() => setIsMenuOpen(false)} className="p-2 text-(--text-primary) hover:text-(--accent) transition-colors">
-              <X size={24} />
-            </button>
-          </div>
-          <div className="flex-1 flex flex-col justify-center px-8 space-y-8">
-            <Link href="/products" className="font-(family-name:--font-display) text-5xl font-bold uppercase tracking-tighter text-(--text-primary) hover:text-(--accent) transition-colors duration-200" style={{ animationDelay: '0ms' }}>Shop</Link>
-            <Link href="/products" className="font-(family-name:--font-display) text-5xl font-bold uppercase tracking-tighter text-(--text-primary) hover:text-(--accent) transition-colors duration-200" style={{ animationDelay: '50ms' }}>Collections</Link>
-            <Link href="/about" className="font-(family-name:--font-display) text-5xl font-bold uppercase tracking-tighter text-(--text-primary) hover:text-(--accent) transition-colors duration-200" style={{ animationDelay: '100ms' }}>About</Link>
-            <div className="pt-8 border-t border-(--border) space-y-4">
-              <Link href="/account" className="block text-xl font-bold uppercase tracking-widest text-(--text-muted) hover:text-(--accent)">Account</Link>
-              <Link href="/faq" className="block text-xl font-bold uppercase tracking-widest text-(--text-muted) hover:text-(--accent)">Support</Link>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Search Overlay */}
-      {isSearchOpen && (
-        <div className="fixed inset-0 bg-(--bg) z-50 flex flex-col">
-          <div className="px-4 md:px-8 py-6 border-b border-(--border) flex items-center gap-4">
-            <Search size={24} className="text-(--accent)" />
-            <input 
-              type="text" 
-              placeholder="SEARCH PRODUCTS..."
-              className="flex-1 text-2xl md:text-4xl font-(family-name:--font-display) font-bold uppercase tracking-tighter focus:outline-none bg-transparent text-(--text-primary) placeholder:text-(--text-muted)"
-              autoFocus
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button onClick={() => setIsSearchOpen(false)} className="p-2 text-(--text-primary) hover:text-(--accent) transition-colors border border-(--border) hover:border-(--accent)">
-              <X size={24} />
-            </button>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto bg-(--bg-surface) p-4 md:p-8">
-            {searchQuery ? (
-              searchResults.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {searchResults.map((p) => (
-                    <Link href={`/products/${p.id}`} key={p.id} className="group border border-(--border) bg-(--bg-card) p-4 flex flex-col hover:border-(--accent) transition-colors duration-200">
-                      <div className="aspect-square bg-(--bg-surface) border border-(--border) mb-4 overflow-hidden">
-                        <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" style={{ transitionTimingFunction: 'var(--ease-out)' }} />
-                      </div>
-                      <h3 className="font-(family-name:--font-display) font-bold uppercase tracking-tighter text-lg text-(--text-primary) line-clamp-1">{p.name}</h3>
-                      <p className="font-bold text-sm text-(--accent)">₹{p.price}</p>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-20">
-                  <p className="text-2xl font-(family-name:--font-display) font-bold uppercase tracking-tighter text-(--text-muted)">No results found for &quot;{searchQuery}&quot;</p>
-                </div>
-              )
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm font-bold uppercase tracking-widest text-(--text-muted)">
-                <div>
-                  <h4 className="mb-4 text-(--accent) border-b border-(--accent) pb-2 inline-block">Trending Searches</h4>
-                  <ul className="space-y-4">
-                    <li><button onClick={() => setSearchQuery('Hoodie')} className="hover:text-(--accent) flex items-center gap-2 transition-colors"><ArrowRight size={14}/> Hoodie</button></li>
-                    <li><button onClick={() => setSearchQuery('Cargo')} className="hover:text-(--accent) flex items-center gap-2 transition-colors"><ArrowRight size={14}/> Cargo Pants</button></li>
-                    <li><button onClick={() => setSearchQuery('Vibram')} className="hover:text-(--accent) flex items-center gap-2 transition-colors"><ArrowRight size={14}/> Vibram Sneakers</button></li>
-                  </ul>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      </div>
+    </nav>
     </>
   );
 }

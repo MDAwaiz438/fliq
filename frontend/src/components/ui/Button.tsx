@@ -1,42 +1,48 @@
 import { ButtonHTMLAttributes, forwardRef } from "react";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg" | "icon";
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "ghost" | "outline-accent" | "destructive" | "danger";
+  size?: "sm" | "md" | "lg";
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", ...props }, ref) => {
+  ({ className = "", variant = "primary", size = "md", children, ...props }, ref) => {
+
+    const baseStyles = [
+      "font-heading font-bold uppercase tracking-[0.08em]",
+      "inline-flex items-center justify-center cursor-pointer",
+      "transition-all duration-[var(--dur-fast)] ease-[var(--ease-standard)]",
+      "active:translate-y-0",
+      "disabled:bg-charcoal disabled:text-muted disabled:cursor-not-allowed disabled:border-none disabled:hover:translate-y-0",
+      "focus-visible:outline-2 focus-visible:outline-acid focus-visible:outline-offset-2",
+    ].join(" ");
+
+    const variants: Record<string, string> = {
+      primary: "bg-bone text-white hover:bg-black/85 hover:-translate-y-px shadow-xs",
+      secondary: "bg-obsidian text-bone border border-border hover:bg-charcoal hover:-translate-y-px",
+      ghost: "bg-transparent border border-border text-bone hover:bg-black/5",
+      "outline-accent": "bg-white border-2 border-acid text-acid hover:bg-acid hover:text-white hover:-translate-y-px shadow-xs",
+      destructive: "bg-transparent border border-danger text-danger hover:bg-danger/10",
+      danger: "bg-danger text-white hover:opacity-90 hover:-translate-y-px shadow-xs",
+    };
+
+    const sizes: Record<string, string> = {
+      sm: "h-8 px-4 text-[var(--text-micro)]",
+      md: "h-[clamp(2.5rem,4vw,3rem)] px-[var(--space-5)] text-[var(--text-small)]",
+      lg: "h-[clamp(3rem,5vw,3.5rem)] px-[var(--space-6)] text-[var(--text-small)]",
+    };
+
     return (
       <button
         ref={ref}
-        className={cn(
-          "inline-flex items-center justify-center uppercase font-bold tracking-widest disabled:opacity-50 disabled:pointer-events-none",
-          "transition-all duration-200",
-          {
-            "bg-(--accent) text-(--bg) hover:bg-transparent hover:text-(--accent) border border-(--accent) hover:glow": variant === "primary",
-            "bg-transparent text-(--accent) border border-(--accent) hover:bg-(--accent) hover:text-(--bg)": variant === "secondary",
-            "bg-transparent border border-(--border) text-(--text-primary) hover:border-(--accent) hover:text-(--accent)": variant === "outline",
-            "bg-transparent text-(--text-muted) hover:text-(--accent)": variant === "ghost",
-            "h-10 px-4 text-xs": size === "sm",
-            "h-12 px-8 text-sm": size === "md",
-            "h-14 px-10 text-base": size === "lg",
-            "h-12 w-12": size === "icon",
-          },
-          className
-        )}
-        style={{ transitionTimingFunction: 'var(--ease-out)' }}
+        className={`${baseStyles} ${variants[variant] || variants.primary} ${sizes[size]} ${className}`}
         {...props}
-      />
+      >
+        {children}
+      </button>
     );
   }
 );
-Button.displayName = "Button";
 
-export { Button, cn };
+Button.displayName = "Button";
+export default Button;
